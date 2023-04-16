@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1727486",
+      "name": "241隐藏、不可见",
+      "font_class": "yincangbukejian",
+      "unicode": "e8d5",
+      "unicode_decimal": 59605
+    },
+    {
+      "icon_id": "7699194",
+      "name": "可见",
+      "font_class": "xianshikejian",
+      "unicode": "e88b",
+      "unicode_decimal": 59531
+    },
+    {
+      "icon_id": "5387522",
+      "name": "关闭",
+      "font_class": "guanbi1",
+      "unicode": "eaf2",
+      "unicode_decimal": 60146
+    },
+    {
       "icon_id": "4646394",
       "name": "手机号码",
       "font_class": "shoujihaoma",

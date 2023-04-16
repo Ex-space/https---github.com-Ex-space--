@@ -1,16 +1,22 @@
-import { createRouter, createWebHashHistory } from "vue-router";
-import Login from "../views/login.vue";
+import { createRouter, createWebHistory } from "vue-router";
+import Data from "../views/data.vue";
+import Forget from "../views/forget.vue";
 const Router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     {
       path: "/",
-      redirect: "/login",
+      redirect: "/data",
     },
     {
-      path: "/login",
-      name: "login",
-      component: Login,
+      path: "/data",
+      name: "data",
+      component: Data,
+    },
+    {
+      path: "/forget",
+      name: "forget",
+      component: Forget,
     },
   ],
 });
