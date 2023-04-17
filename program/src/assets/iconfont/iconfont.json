@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2077531",
+      "name": "密码",
+      "font_class": "mima2",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "34562332",
+      "name": "密码",
+      "font_class": "mima3",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "28140269",
+      "name": "确认密码",
+      "font_class": "querenmima",
+      "unicode": "e7b3",
+      "unicode_decimal": 59315
+    },
+    {
+      "icon_id": "14681156",
+      "name": "icon-nextstep",
+      "font_class": "nextstep",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "553324",
+      "name": "验证 验证码",
+      "font_class": "yanzhengyanzhengma",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "7759177",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    },
+    {
       "icon_id": "1727486",
       "name": "241隐藏、不可见",
       "font_class": "yincangbukejian",
@@ -32,13 +74,6 @@
       "font_class": "shoujihaoma",
       "unicode": "e7ec",
       "unicode_decimal": 59372
-    },
-    {
-      "icon_id": "14151838",
-      "name": "密码",
-      "font_class": "mima",
-      "unicode": "e632",
-      "unicode_decimal": 58930
     }
   ]
 }

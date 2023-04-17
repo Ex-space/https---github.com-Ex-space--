@@ -1,4 +1,4 @@
-<template>
+<template v-if="status.isLogin">
   <Transition name="fade">
     <div class="mask" v-if="status.isLogin"></div>
   </Transition>
@@ -7,21 +7,24 @@
       <div class="login-form">
         <span class="iconfont icon-guanbi1" @click="closeHandle"></span>
         <div class="title">账户登录</div>
-        <myInput class="telNumber" input-type="text">
+        <loginInput class="telNumber" input-type="text">
           <template #icon>
             <span
               class="iconfont icon-shoujihaoma"
-              style="font-size: 1.5em"
+              style="color: black;font-size: 1.5em"
             ></span>
           </template>
-          <template #placeholder> 手机号码 </template>
-        </myInput>
-        <myInput class="password" input-type="password">
+          <template #placeholder> 请输入手机号码</template>
+        </loginInput>
+        <loginInput class="password" input-type="password">
           <template #icon>
-            <span class="iconfont icon-mima" style="font-size: 1.5em"></span>
+            <span
+              class="iconfont icon-mima2"
+              style="color: #333; font-size: 1.5em; transform: scaleY(0.9)"
+            ></span>
           </template>
-          <template #placeholder> 密码 </template>
-        </myInput>
+          <template #placeholder> 请输入密码 </template>
+        </loginInput>
         <el-row class="row">
           <div class="checkbox-wrapper-13">
             <input type="checkbox" id="c1-13" />
@@ -30,22 +33,48 @@
         </el-row>
         <button class="login">登录</button>
         <el-row class="row2">
-          <span>忘记密码？ <a href="/forget" target="_blank">去找回</a> </span>
+          <span
+            >忘记密码？<a @click.native="resetIndex" href="/forget">去找回</a>
+          </span>
         </el-row>
       </div>
     </div>
   </Transition>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+import { useIndexStore } from "../../store/Forget";
 import { useStatusStore } from "../../store/Login";
-import myInput from "./input.vue";
-import { ref, onMounted } from "vue";
-onMounted(() => {});
-const status = useStatusStore();
-const closeHandle = () => {
-  status.changeLoginStatus();
-};
+import { defineComponent, onDeactivated, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { stat } from "fs";
+export default defineComponent({
+  setup() {
+    const store = useIndexStore();
+
+    const resetIndex = () => {
+      store.currentIndex = 0;
+    };
+    const closeWindow = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && status.isLogin) {
+        closeHandle();
+      }
+    };
+    onMounted(() => {
+      window.addEventListener("keydown", closeWindow);
+    });
+    const closeHandle = () => {
+      status.changeLoginStatus();
+      window.removeEventListener("keydown", closeWindow);
+    };
+    const status = useStatusStore();
+    return {
+      resetIndex,
+      status,
+      closeHandle,
+    };
+  },
+});
 </script>
 <style lang="less" scoped>
 .mask {
@@ -95,7 +124,7 @@ const closeHandle = () => {
     .password {
       margin-top: 3em;
     }
-    .telNumber{
+    .telNumber {
       margin-top: 2em;
     }
     .row,
@@ -225,12 +254,14 @@ const closeHandle = () => {
       border: none;
       color: #fff;
       background-image: linear-gradient(30deg, #007bff, #4da3ff);
-      border-radius: 2em;
+      border-radius: 0.3em;
       background-size: 100% auto;
       font-family: inherit;
       padding: 0.6em 1.5em;
     }
-
+    button:focus {
+      border: 0;
+    }
     button:hover {
       background-position: right center;
       background-size: 200% auto;
@@ -254,7 +285,7 @@ const closeHandle = () => {
     .login {
       font-size: 1em;
       height: 35px;
-      margin-top: .5em;
+      margin-top: 0.5em;
       margin-bottom: 1em;
     }
     .row2 {
