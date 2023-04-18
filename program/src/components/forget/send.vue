@@ -1,11 +1,11 @@
 <template>
-  <forgetInput class="input tel" input-type="text" :flag="false">
+  <forgetInput class="input tel" input-type="text" restrict="tel" :flag="false">
     <template #icon>
       <span class="iconfont icon-shoujihaoma" style="font-size: 1.5em"></span>
     </template>
     <template #placeholder> 请输入手机号码</template>
   </forgetInput>
-  <forgetInput class="input msg" input-type="text" :flag="true">
+  <forgetInput restrict="msg" class="input msg" input-type="text" :flag="true">
     <template #icon>
       <span
         class="iconfont icon-yanzhengyanzhengma"
@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { useIndexStore } from "../../store/Forget";
-import { provide, ref } from "vue";
+import { provide, ref, watchEffect } from "vue";
 </script>
 <style lang="less" scoped>
 .input {

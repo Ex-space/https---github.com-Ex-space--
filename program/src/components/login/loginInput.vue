@@ -30,7 +30,7 @@ const myinput = ref();
 onMounted(() => {
   value.value = "";
 });
-let isVisible = ref<any>(true);
+let isVisible = ref<boolean>(true);
 function changeVisible() {
   isVisible.value = !isVisible.value;
   nextTick(() => {

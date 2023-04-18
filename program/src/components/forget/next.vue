@@ -1,17 +1,109 @@
 <template>
   <button @click="goNext">
     <span class="text">下一步</span
-    ><span >Next<span class="iconfont icon-nextstep"></span></span>
+    ><span>Next<span class="iconfont icon-nextstep"></span></span>
   </button>
 </template>
 
 <script lang="ts" setup>
 import { useIndexStore } from "../../store/Forget";
 import { provide, ref } from "vue";
+import { ElMessage } from "element-plus";
+import { ElNotification } from "element-plus";
 const store = useIndexStore();
-
+//节流阀
+let pwdFlag = true;
+let pwdTimeID = null;
+let conFlag = true;
+let conTimeID = null;
+let veriFlag = true;
+let veriTimeID = null;
+let authFlag = true;
+let authTimeID = null;
 const goNext = () => {
-  store.currentIndex++;
+  //校验手机验证那
+  if (store.currentIndex === 1) {
+    //下一步点击事件触发
+    if (store.authRight && store.veriRight) {
+      store.currentIndex++;
+    } else if (!store.authRight) {
+      if (authFlag) {
+        ElMessage({
+          showClose: true,
+          type: "error",
+          message: "请输入合法有效的手机号码！",
+        });
+        authFlag = false;
+        if (!authTimeID) {
+          authTimeID = setTimeout(() => {
+            authFlag = true;
+            authTimeID = null;
+          }, 2000);
+        }
+      }
+    } else {
+      if (veriFlag) {
+        ElMessage({
+          showClose: true,
+          type: "error",
+          message: "验证码不匹配，请输入正确的验证码！",
+        });
+        veriFlag = false;
+        if (!veriTimeID) {
+          veriTimeID = setTimeout(() => {
+            veriFlag = true;
+            veriTimeID = null;
+          }, 2000);
+        }
+      }
+    }
+  }
+  //校验重置密码
+  if (store.currentIndex === 2) {
+    //下一步点击事件触发
+    if (store.pwdRight && store.consistentRight) {
+      store.currentIndex++;
+      ElNotification.success({
+        title: "重置密码成功！",
+        message: "重置密码成功，即将返回首页登录！",
+        showClose: false,
+        offset: 10,
+        zIndex: 100,
+      });
+    } else if (!store.consistentRight) {
+      if (conFlag) {
+        ElMessage({
+          showClose: true,
+          type: "error",
+          message: "两次输入的密码不一致！",
+        });
+        conFlag = false;
+        if (!conTimeID) {
+          conTimeID = setTimeout(() => {
+            conFlag = true;
+            conTimeID = null;
+          }, 2000);
+        }
+      }
+    } else {
+      if (pwdFlag) {
+        ElMessage({
+          duration: 2000,
+          showClose: true,
+          type: "error",
+          message:
+            "密码至少6位，至多16位，包括至少1个大写字母，1个小写字母，1个数字！",
+        });
+        pwdFlag = false;
+        if (!pwdTimeID) {
+          pwdTimeID = setTimeout(() => {
+            pwdFlag = true;
+            pwdTimeID = null;
+          }, 2000);
+        }
+      }
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -27,7 +119,7 @@ button {
   font-size: 18.079px;
   line-height: 18.079px;
   width: 15%;
-  padding: .65em 0;
+  padding: 0.65em 0;
   text-decoration: none;
   cursor: pointer;
   background: --main;

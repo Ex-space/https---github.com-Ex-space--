@@ -34,12 +34,11 @@ import { StepsProps } from "naive-ui";
 import complete from "../components/forget/complete.vue";
 import reset from "../components/forget/reset.vue";
 import send from "../components/forget/send.vue";
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import { defineComponent, onMounted, provide, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 export default defineComponent({
   setup() {
     onMounted(() => {
-      console.log(1);
     });
     const router = useRouter();
     const goBack = () => {
@@ -78,9 +77,9 @@ export default defineComponent({
 .goback {
   cursor: pointer;
   position: absolute;
-  top: 2vw;
-  font-size: 1.4vw;
-  left: 2vw;
+  top: 2vmin;
+  font-size: 1.4vmax;
+  left: 4vmin;
   .iconfont,
   .backTip {
     transition: all 0.5s;
@@ -90,6 +89,7 @@ export default defineComponent({
     margin-right: 0.4vw;
   }
 }
+//返回动画
 @keyframes shake {
   0% {
     transform: translate(0px);
