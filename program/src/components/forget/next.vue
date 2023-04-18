@@ -28,10 +28,12 @@ const goNext = () => {
       store.currentIndex++;
     } else if (!store.authRight) {
       if (authFlag) {
-        ElMessage({
-          showClose: true,
-          type: "error",
-          message: "请输入合法有效的手机号码！",
+        ElNotification.error({
+          duration: 2000,
+          title: "请输入正确有效的手机号码！",
+          showClose: false,
+          offset: 10,
+          zIndex: 100,
         });
         authFlag = false;
         if (!authTimeID) {
@@ -43,10 +45,12 @@ const goNext = () => {
       }
     } else {
       if (veriFlag) {
-        ElMessage({
-          showClose: true,
-          type: "error",
-          message: "验证码不匹配，请输入正确的验证码！",
+        ElNotification.error({
+          duration: 2000,
+          title: "验证码不匹配，请输入正确的验证码！",
+          showClose: false,
+          offset: 10,
+          zIndex: 100,
         });
         veriFlag = false;
         if (!veriTimeID) {
@@ -72,10 +76,12 @@ const goNext = () => {
       });
     } else if (!store.consistentRight) {
       if (conFlag) {
-        ElMessage({
-          showClose: true,
-          type: "error",
-          message: "两次输入的密码不一致！",
+        ElNotification.error({
+          duration: 2000,
+          title: "两次输入的密码不一致",
+          showClose: false,
+          offset: 10,
+          zIndex: 100,
         });
         conFlag = false;
         if (!conTimeID) {
@@ -87,19 +93,21 @@ const goNext = () => {
       }
     } else {
       if (pwdFlag) {
-        ElMessage({
-          duration: 2000,
-          showClose: true,
-          type: "error",
+        ElNotification.error({
+          duration: 4000,
+          title: "密码格式错误！",
           message:
             "密码至少6位，至多16位，包括至少1个大写字母，1个小写字母，1个数字！",
+          showClose: false,
+          offset: 10,
+          zIndex: 100,
         });
         pwdFlag = false;
         if (!pwdTimeID) {
           pwdTimeID = setTimeout(() => {
             pwdFlag = true;
             pwdTimeID = null;
-          }, 2000);
+          }, 4000);
         }
       }
     }
@@ -108,6 +116,7 @@ const goNext = () => {
 </script>
 <style lang="less" scoped>
 button {
+  transition: all 0.3s;
   --main: #007bff;
   margin-top: 3em;
   margin-bottom: 1.5em;
@@ -119,6 +128,7 @@ button {
   font-size: 18.079px;
   line-height: 18.079px;
   width: 15%;
+  min-width: 120px;
   padding: 0.65em 0;
   text-decoration: none;
   cursor: pointer;
@@ -152,7 +162,9 @@ button span:last-child {
   height: 14px;
   line-height: 13px;
 }
-
+button:active {
+  transform: scale(0.9);
+}
 button:after {
   content: "";
   position: absolute;

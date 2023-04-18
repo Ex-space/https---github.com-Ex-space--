@@ -21,6 +21,32 @@ button:focus {
 a {
   text-decoration: none;
 }
+
+::-webkit-scrollbar-track {
+  height: 1.5vw;
+  min-height: 8px;
+  max-height: 12px;
+  background: gainsboro;
+  /* border-radius: 6px; */
+}
+
+/* Designing for scroll-bar */
+::-webkit-scrollbar {
+  height: 1.5vw;
+  min-height: 8px;
+  max-height: 12px;
+  width: 1.5vw;
+  min-width: 8px;
+  max-width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  height: 1.5vw;
+  min-height: 8px;
+  max-height: 12px;
+  background: rgba(127, 127, 127, 0.516);
+  border-radius: 6px;
+}
 html,
 body {
   height: 100%;

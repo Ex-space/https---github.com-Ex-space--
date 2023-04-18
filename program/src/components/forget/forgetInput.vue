@@ -16,7 +16,7 @@
     <span
       :class="[
         'iconfont',
-        { 'icon-yincangbukejian': !isVisible, 'icon-xianshikejian': isVisible },
+        { 'icon-yincangbukejian': isVisible, 'icon-xianshikejian': !isVisible },
       ]"
       @click.prevent="changeVisible()"
       v-if="inputType === 'password' && value"
@@ -237,5 +237,10 @@ onMounted(() => {
   left: 1.9rem;
   font-size: 12px;
   color: #333;
+}
+@media screen and (max-width: 900px) {
+  .input-container {
+    width: 40%!important;
+  }
 }
 </style>

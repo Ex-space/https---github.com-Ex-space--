@@ -5,5 +5,4 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

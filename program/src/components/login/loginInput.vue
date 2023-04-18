@@ -9,7 +9,7 @@
     <span
       :class="[
         'iconfont',
-        { 'icon-yincangbukejian': !isVisible, 'icon-xianshikejian': isVisible },
+        { 'icon-yincangbukejian': isVisible, 'icon-xianshikejian': !isVisible },
       ]"
       @click.prevent="changeVisible()"
       v-if="inputType === 'password' && value"
