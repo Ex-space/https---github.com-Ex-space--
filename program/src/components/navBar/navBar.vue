@@ -1,8 +1,18 @@
 <template>
   <div class="nav-container">
     <label class="switch">
-      <input type="checkbox" v-model="checked" />
+      <input type="checkbox"  v-model="checked" />
       <span class="slider"></span>
+    </label>
+    <label class="hamburger">
+      <input type="checkbox" />
+      <svg viewBox="0 0 40 32">
+        <path
+          class="line line-top-bottom"
+          d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
+        ></path>
+        <path class="line" d="M7 16 27 16"></path>
+      </svg>
     </label>
   </div>
 </template>
@@ -11,22 +21,22 @@
 import { ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
-const checked = ref<boolean>(false);
+const checked = ref<boolean>(true);
 const theme = ref<string>("#333");
 watchEffect(() => {
-  if (checked.value) {
+  if (!checked.value) {
     document
       .getElementsByTagName("body")[0]
-      .style.setProperty("--theme", "#fff");
+      .style.setProperty("--theme", "#333");
     document
       .getElementsByTagName("body")[0]
-      .style.setProperty("--compare", "#333");
+      .style.setProperty("--compare", "#fff");
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--back", "#121212");
     document
       .getElementsByTagName("body")[0]
-      .style.setProperty("--nav", "rgba(189, 189, 189, 0.605)");
+      .style.setProperty("--nav", "rgba(59,59, 59, 0.605)");
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--font", "#fff");
@@ -45,14 +55,20 @@ watchEffect(() => {
       .style.setProperty("--hoverBtn", "#5eacff");
     document
       .getElementsByTagName("body")[0]
+      .style.setProperty("--stepFont", "#fff");
+    document
+      .getElementsByTagName("body")[0]
+      .style.setProperty("--stepIcon", "#404040");
+    document
+      .getElementsByTagName("body")[0]
       .style.setProperty("--weight", "300");
   } else {
     document
       .getElementsByTagName("body")[0]
-      .style.setProperty("--theme", "#333");
+      .style.setProperty("--theme", "#fff");
     document
       .getElementsByTagName("body")[0]
-      .style.setProperty("--compare", "#fff");
+      .style.setProperty("--compare", "#666");
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--back", "#fff");
@@ -75,6 +91,12 @@ watchEffect(() => {
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--hoverBtn", "#409cff");
+    document
+      .getElementsByTagName("body")[0]
+      .style.setProperty("--stepFont", "#36be1bff");
+    document
+      .getElementsByTagName("body")[0]
+      .style.setProperty("--stepIcon", "#fff");
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--weight", "500");
@@ -170,6 +192,44 @@ const goBack = () => {
     left: 80%;
     width: 0px;
     height: 0px;
+  }
+  .hamburger {
+    cursor: pointer;
+  }
+
+  .hamburger input {
+    display: none;
+  }
+
+  .hamburger svg {
+    /* The size of the SVG defines the overall size */
+    height: 3em;
+    /* Define the transition for transforming the SVG */
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .line {
+    fill: none;
+    stroke: white;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 3;
+    /* Define the transition for transforming the Stroke */
+    transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+      stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .line-top-bottom {
+    stroke-dasharray: 12 63;
+  }
+
+  .hamburger input:checked + svg {
+    transform: rotate(-45deg);
+  }
+
+  .hamburger input:checked + svg .line-top-bottom {
+    stroke-dasharray: 20 300;
+    stroke-dashoffset: -32.42;
   }
 }
 </style>

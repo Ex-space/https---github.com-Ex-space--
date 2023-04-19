@@ -8,21 +8,16 @@
   >
     <div class="breadCrumb">登录 > 忘记密码</div>
     <span class="title">{{ title }}</span>
-    <n-steps
+    <el-steps
       class="stepLine"
-      style="margin-left: 15%; width: 100%; margin-top: 3em"
-      v-model:current="store.currentIndex"
-      :status="currentStatus"
+      :active="store.currentIndex - 1"
+      finish-status="success"
+      align-center
     >
-      <n-step
-        class="step"
-        title="发送手机验证码"
-        style="cursor: default;"
-        disabled
-      />
-      <n-step class="step" title="重置密码" style="cursor: default" disabled />
-      <n-step class="step" title="完成" style="cursor: default" disabled />
-    </n-steps>
+      <el-step title="获取手机验证码" />
+      <el-step title="重置密码" />
+      <el-step title="完成" />
+    </el-steps>
     <keep-alive>
       <component v-bind:is="currentTabComponent"></component>
     </keep-alive>
@@ -70,7 +65,7 @@ export default defineComponent({
   min-width: 400px;
   border-radius: 1em;
   background-color: $banner;
-  border-color: rgba(100,100,100,.5);
+  border-color: rgba(100, 100, 100, 0.5);
   .breadCrumb {
     top: 2em;
     left: 4em;
@@ -79,8 +74,44 @@ export default defineComponent({
     font-weight: $weight;
   }
 }
-.step {
-  color: $font !important;
+.stepLine{
+  transform: translateY(2em);
+}
+::v-deep .el-step__icon {
+  background: $stepIcon;
+  width: 30px;
+  height: 30px;
+}
+::v-deep .el-step__line {
+  background: transparent;
+  border-top: 5px dotted;
+  transform: translateY(2.5px);
+  .el-step__line-inner {
+    border-width: 0 !important;
+  }
+}
+::v-deep .el-step__icon-inner {
+  font-size: 18px;
+}
+::v-deep .el-step__icon-inner.is-finish {
+  font-weight: 500;
+  font-size: 18px;
+  color: $stepFont;
+}
+::v-deep .el-step__description.is-finish {
+  background: $stepIcon;
+}
+::v-deep .el-step {
+  position: relative;
+  .el-step__head.is-process {
+    color: #c0c4cc;
+    border-color: $soft;
+    // border-color: #c0c4cc;
+  }
+  .el-step__title.is-process {
+    color: $soft;
+    font-weight: unset;
+  }
 }
 .title {
   display: none;

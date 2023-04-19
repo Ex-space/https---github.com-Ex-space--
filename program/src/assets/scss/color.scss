@@ -1,5 +1,5 @@
-$theme: var(--theme, #333);
-$compare: var(--compare, #fff);
+$theme: var(--theme, #fff);
+$compare: var(--compare, #666);
 $back: var(--back, #fff);
 $nav: var(--nav, rgba(59, 59, 59, 0.605));
 $banner: var(--banner, #fff);
@@ -7,3 +7,5 @@ $btn: var(--btn, #000);
 $main: var(--main, #007bff);
 $soft: var(--soft, #007bff);
 $hoverBtn: var(--hoverBtn, #409cff);
+$stepFont:var(--stepFont,#36be1bff);
+$stepIcon:var(--stepIcon,#fff);
