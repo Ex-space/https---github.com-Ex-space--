@@ -4,7 +4,7 @@ export const useIndexStore = defineStore("index", {
   state: () => {
     return {
       //初始化步骤条
-      currentIndex: ref<number>(1),
+      currentIndex: ref<number>(3),
       tel: ref<string>(""),
       pwd: ref<string>(""),
       rePwd: ref<string>(""),

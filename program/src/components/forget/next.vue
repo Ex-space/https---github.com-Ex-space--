@@ -114,16 +114,17 @@ const goNext = () => {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+@import '../../assets/scss/color.scss';
+@import '../../assets/scss/font.scss';
 button {
   transition: all 0.3s;
-  --main: #007bff;
   margin-top: 3em;
   margin-bottom: 1.5em;
   position: relative;
   overflow: hidden;
-  border: 0.01vw solid var(--main);
-  color: var(--main);
+  border: 0.01vw solid $main;
+  color: $main;
   display: inline-block;
   font-size: 18.079px;
   line-height: 18.079px;
@@ -132,7 +133,7 @@ button {
   padding: 0.65em 0;
   text-decoration: none;
   cursor: pointer;
-  background: --main;
+  background: $btn;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
@@ -149,7 +150,7 @@ button span:first-child {
 }
 
 button span:last-child {
-  color: #fff;
+  color: $btn;
   display: block;
   position: absolute;
   bottom: 0;
@@ -172,7 +173,7 @@ button:after {
   left: 0;
   width: 120%;
   height: 100%;
-  background-color: var(--main);
+  background-color: $main;
   transform-origin: bottom center;
   transition: transform 600ms cubic-bezier(0.48, 0, 0.12, 1);
   transform: skewY(9.3deg) scaleY(0);

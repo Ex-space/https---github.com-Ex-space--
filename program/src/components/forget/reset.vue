@@ -8,7 +8,7 @@
     <template #icon>
       <span
         class="iconfont icon-mima2"
-        style="color: #333; font-size: 1.5em; transform: scaleY(0.9)"
+        style=" font-size: 1.5em; transform: scaleY(0.9)"
       ></span>
     </template>
     <template #placeholder> 请输入新密码</template>
@@ -22,7 +22,7 @@
     <template #icon>
       <span
         class="iconfont icon-querenmima"
-        style="color: black; font-size: 1.5em"
+        style="font-size: 1.5em"
       ></span>
     </template>
     <template #placeholder> 再次确认密码</template>
@@ -35,9 +35,14 @@ import { useIndexStore } from "../../store/Forget";
 import { ref } from "vue";
 const store=useIndexStore()
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+@import "../../assets/scss/color.scss";
+@import "../../assets/scss/font.scss";
 .input {
   width: 30% !important;
+}
+.iconfont{
+  color:$font;
 }
 .pwd {
   margin-top: 5em !important;

@@ -6,7 +6,7 @@ import { createPinia } from "pinia";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 import "./assets/iconfont/iconfont.css";
-import "./assets/base.css";
+import "./assets/scss/base.scss";
 import loginInput from "./components/login/loginInput.vue";
 import naive from "naive-ui";
 import navBar from "./components/navBar/navBar.vue";

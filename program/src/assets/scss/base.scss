@@ -1,9 +1,10 @@
+@import './font.scss';
+@import './color.scss';
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 ul,
 ol,
 li {
@@ -51,6 +52,7 @@ html,
 body {
   height: 100%;
   width: 100%;
+  background-color: $back;
   /* font-weight: 250; */
   font-size: 14px;
 }

@@ -1,19 +1,12 @@
 <template>
   <navBar></navBar>
-  <div class="goback" @click="goBack">
-    <span class="iconfont icon-fanhui"></span>
-    <span class="backTip">返回首页</span>
-  </div>
   <n-card
     title=""
     hoverable
     :class="{ card: true, last: store.currentIndex === 3 }"
     embedded
   >
-    <n-breadcrumb class="breadCrumb">
-      <n-breadcrumb-item separator=">"> 登录 </n-breadcrumb-item>
-      <n-breadcrumb-item>忘记密码</n-breadcrumb-item>
-    </n-breadcrumb>
+    <div class="breadCrumb">登录 > 忘记密码</div>
     <span class="title">{{ title }}</span>
     <n-steps
       class="stepLine"
@@ -24,7 +17,7 @@
       <n-step
         class="step"
         title="发送手机验证码"
-        style="cursor: default"
+        style="cursor: default;"
         disabled
       />
       <n-step class="step" title="重置密码" style="cursor: default" disabled />
@@ -44,10 +37,6 @@ import { useRouter } from "vue-router";
 export default defineComponent({
   setup() {
     onMounted(() => {});
-    const router = useRouter();
-    const goBack = () => {
-      router.push("/data");
-    };
     const title = ref<string>("");
     const currentTabComponent = ref<string>("send");
     const store = useIndexStore();
@@ -66,60 +55,37 @@ export default defineComponent({
     return {
       currentStatus: ref<StepsProps["status"]>("process"),
       store,
-      goBack,
       title,
       currentTabComponent,
     };
   },
 });
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+@import "../assets/scss/color.scss";
+@import "../assets/scss/font.scss";
 .card {
   width: 80vw;
+  position: relative;
   min-width: 400px;
+  border-radius: 1em;
+  background-color: $banner;
+  border-color: rgba(100,100,100,.5);
   .breadCrumb {
     top: 2em;
     left: 4em;
     position: absolute;
+    color: $font;
+    font-weight: $weight;
   }
 }
-.goback {
-  z-index: 10001;
-  cursor: pointer;
-  position: absolute;
-  top: 2vmin;
-  font-size: 1.4vmax;
-  left: 4vmin;
-  .iconfont,
-  .backTip {
-    transition: all 0.5s;
-  }
-  .iconfont {
-    font-size: 1.4vw;
-    margin-right: 0.4vw;
-  }
-}
-//返回动画
-@keyframes shake {
-  0% {
-    transform: translate(0px);
-  }
-  100% {
-    transform: translate(-2px, -2px) rotate(-5deg) scale(1.05);
-  }
-}
-.goback:hover {
-  color: #007bff;
-  .iconfont {
-    transform-origin: 100% 100%;
-    display: inline-block;
-    animation: shake 0.5s alternate ease-in infinite;
-  }
+.step {
+  color: $font !important;
 }
 .title {
   display: none;
 }
-@media screen and (max-height: 580px) {
+@media screen and (max-height: 660px) {
   .goback {
     display: none;
   }

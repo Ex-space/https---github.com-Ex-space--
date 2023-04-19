@@ -164,14 +164,16 @@ onMounted(() => {
   value.value = "";
 });
 </script>
-<style lang="less" scoped>
-@halfHeight: 0.5em;
+<style lang="scss" scoped>
+@import "../../assets/scss/color.scss";
+@import "../../assets/scss/font.scss";
+$halfHeight: 0.5em;
 .point {
   cursor: pointer;
-  background-color: #007bff;
+  background-color: $soft;
 }
 .point:hover {
-  background-color: #409cff;
+  background-color: $hoverBtn;
 }
 .disPoint {
   cursor: not-allowed;
@@ -202,7 +204,7 @@ onMounted(() => {
 }
 .input-container input[type="text"]:focus,
 .input-container input[type="password"]:focus {
-  border-color: #007bff;
+  border-color: $soft;
 }
 .input-container input[type="text"],
 .input-container input[type="password"] {
@@ -211,9 +213,10 @@ onMounted(() => {
   font-size: 15px;
   width: 100%;
   border: none;
+  color: $font;
   border: 0.13vw solid #ccc;
   border-radius: 1vmin;
-  padding: @halfHeight;
+  padding: $halfHeight;
   background-color: transparent;
   outline: none;
 }
@@ -236,11 +239,11 @@ onMounted(() => {
   transform: translate(0);
   left: 1.9rem;
   font-size: 12px;
-  color: #333;
+  color: $font;
 }
 @media screen and (max-width: 900px) {
   .input-container {
-    width: 40%!important;
+    width: 40% !important;
   }
 }
 </style>

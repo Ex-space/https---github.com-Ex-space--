@@ -2,11 +2,15 @@
   <n-result
     class="result"
     status="success"
-    title="修改成功"
-    :description="description"
   >
+    <template #default>
+      <h2>修改成功</h2>
+      <div class="description">{{ description }}</div>
+    </template>
     <template #footer>
-      <n-button @click="goBackNow">立即返回</n-button>
+      <n-button @click="goBackNow">
+        <span class="btn">立即返回</span>
+      </n-button>
     </template>
   </n-result>
 </template>
@@ -38,8 +42,19 @@ goBackNow = () => {
   clearInterval(timeID.value);
 };
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+@import "../../assets/scss/color.scss";
+@import "../../assets/scss/font.scss";
 .result {
-  margin: 7em 0 4em;
+  color:$font;
+  margin: 6em 0 4em;
+  h2{
+    font-size: 3rem;
+    margin-top: -2rem;
+    margin-bottom: .5rem;
+  }
+  .btn{
+    color: $font;
+  }
 }
 </style>

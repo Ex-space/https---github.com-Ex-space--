@@ -21,12 +21,18 @@
 import { useIndexStore } from "../../store/Forget";
 import { provide, ref, watchEffect } from "vue";
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+@import "../../assets/scss/color.scss";
+@import "../../assets/scss/font.scss";
 .input {
   width: 30% !important;
 }
 .tel {
   margin-top: 5em !important;
+}
+.iconfont{
+  color:$font;
+  font-weight: $weight;
 }
 .msg {
   margin-top: 4em !important;
