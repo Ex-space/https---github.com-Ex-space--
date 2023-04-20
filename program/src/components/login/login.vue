@@ -11,7 +11,7 @@
           <template #icon>
             <span
               class="iconfont icon-shoujihaoma"
-              style="color: black;font-size: 1.5em"
+              style="color: $font; font-size: 1.5em"
             ></span>
           </template>
           <template #placeholder> 请输入手机号码</template>
@@ -27,14 +27,16 @@
         </loginInput>
         <el-row class="row">
           <div class="checkbox-wrapper-13">
-            <input type="checkbox" id="c1-13" />
+            <input type="checkbox" id="c1-13" v-model="checked" />
             <label for="c1-13">三十天内免登录</label>
           </div>
         </el-row>
-        <button class="login">登录</button>
+        <button class="login" @click="testLogin">登录</button>
         <el-row class="row2">
           <span
-            >忘记密码？<a @click.native="resetIndex" href="/forget">去找回</a>
+            >忘记密码？<a class="a" @click.native="resetIndex" href="/forget"
+              >去找回</a
+            >
           </span>
         </el-row>
       </div>
@@ -45,12 +47,60 @@
 <script lang="ts">
 import { useIndexStore } from "../../store/Forget";
 import { useStatusStore } from "../../store/Login";
-import { defineComponent, onDeactivated, onMounted, ref } from "vue";
+import {
+  defineComponent,
+  getCurrentInstance,
+  onDeactivated,
+  onMounted,
+  ref,
+} from "vue";
+import { ElNotification } from "element-plus";
 import { useRouter } from "vue-router";
-import { stat } from "fs";
 export default defineComponent({
   setup() {
+    const checked = ref<boolean>(false);
+    const { proxy } = getCurrentInstance();
+    const status = useStatusStore();
     const store = useIndexStore();
+    const testLogin = async () => {
+      console.log(status.tel);
+      console.log(status.pwd);
+      await proxy.$http
+        .post(
+          "/user/login",
+          {
+            phone: status.tel,
+            password: status.pwd,
+            remember_me: checked ? 1 : 0,
+          },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          if (res.data.code === 1) {
+            ElNotification({
+              title: "登录成功！",
+              type: "success",
+              offset: 50,
+              zIndex: 100000000000000,
+            });
+            closeHandle();
+          } else {
+            ElNotification({
+              title: "登录失败！",
+              message: res.data.msg,
+              type: "error",
+              offset: 50,
+              zIndex: 100000000000000,
+            });
+          }
+        })
+        .catch((Error) => {});
+    };
 
     const resetIndex = () => {
       store.currentIndex = 0;
@@ -67,8 +117,9 @@ export default defineComponent({
       status.changeLoginStatus();
       window.removeEventListener("keydown", closeWindow);
     };
-    const status = useStatusStore();
     return {
+      checked,
+      testLogin,
       resetIndex,
       status,
       closeHandle,
@@ -76,7 +127,9 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+@import "../../assets/scss/color.scss";
+@import "../../assets/scss/font.scss";
 .mask {
   position: absolute;
   left: 0;
@@ -106,30 +159,41 @@ export default defineComponent({
     z-index: 2;
     width: 100%;
     height: 100%;
-    background-color: #fff;
+    background-color: $realBanner;
     box-shadow: 1.997px 3.994px 9.999px 6.006px rgb(231, 231, 231);
     display: flex;
     flex-direction: column;
     align-items: center;
     .icon-guanbi1 {
+      color: $font;
       cursor: pointer;
       position: absolute;
       right: 1em;
       top: 0.6em;
     }
+    .a {
+      color: $soft;
+    }
+    .iconfont {
+      color: $font !important;
+    }
     .title {
       z-index: 2;
+      color: $font;
       margin-top: 35px;
     }
     .password {
+      color: $font;
       margin-top: 3em;
     }
     .telNumber {
+      color: $font;
       margin-top: 2em;
     }
     .row,
     .login,
     .row2 {
+      color: $font;
       width: 69%;
     }
     .row {
@@ -142,7 +206,7 @@ export default defineComponent({
           --focus: 0.13vw rgba(112, 147, 254, 0.3);
           --border: #bbc1e1;
           --border-hover: #007bff;
-          --background: #fff;
+          --background: $font;
           --disabled: #f6f8ff;
           --disabled-inner: #e1e6f9;
           -webkit-appearance: none;
@@ -289,6 +353,7 @@ export default defineComponent({
       margin-bottom: 1em;
     }
     .row2 {
+      color: $font;
       font-size: 1em;
       position: relative;
       // display: flex;

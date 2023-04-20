@@ -42,7 +42,7 @@ const store=useIndexStore()
   width: 30% !important;
 }
 .iconfont{
-  color:$font;
+  color: $font!important;;
 }
 .pwd {
   margin-top: 5em !important;

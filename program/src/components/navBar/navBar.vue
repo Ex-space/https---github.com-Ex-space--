@@ -5,20 +5,25 @@
         <input type="checkbox" v-model="checked" />
         <span class="slider"></span>
       </label>
-      <ul class="nav-con" ref="con">
-        <Transition name="first">
-          <li class="second nav-item" v-if="isUnFold">关于</li>
-        </Transition>
-        <Transition name="second">
-          <li class="second nav-item" v-if="isUnFold">关于</li>
-        </Transition>
-        <Transition name="third">
-          <li class="third nav-item" v-if="isUnFold">首页</li>
-        </Transition>
-        <Transition name="fourth">
-          <li class="fourth nav-item" v-if="isUnFold">请求帮助</li>
-        </Transition>
-      </ul>
+      <TransitionGroup
+        class="nav-con"
+        ref="con"
+        tag="ul"
+        :css="false"
+        @before-enter="onBeforeEnter"
+        @enter="onEnter"
+        @leave="onLeave"
+      >
+        <li
+          v-if="isUnFold"
+          class="nav-item"
+          v-for="(item, index) in list"
+          :key="item.msg"
+          :data-index="index"
+        >
+          {{ item.msg }}
+        </li>
+      </TransitionGroup>
       <label class="hamburger">
         <input type="checkbox" ref="unfold" v-model="foldFlag" />
         <svg viewBox="0 0 40 32">
@@ -64,6 +69,9 @@ watchEffect(() => {
       .style.setProperty("--banner", "rgba(100,100,100,.5)");
     document
       .getElementsByTagName("body")[0]
+      .style.setProperty("--realBanner", "rgb(90,90,90)");
+    document
+      .getElementsByTagName("body")[0]
       .style.setProperty("--main", "#ccc");
     document.getElementsByTagName("body")[0].style.setProperty("--btn", "#000");
     document
@@ -80,6 +88,12 @@ watchEffect(() => {
       .style.setProperty("--stepIcon", "#404040");
     document
       .getElementsByTagName("body")[0]
+      .style.setProperty("--navExtends", "#404040");
+    document
+      .getElementsByTagName("body")[0]
+      .style.setProperty("--navShadow", "rgb(102, 102, 102)");
+    document
+      .getElementsByTagName("body")[0]
       .style.setProperty("--weight", "300");
   } else {
     document
@@ -91,6 +105,9 @@ watchEffect(() => {
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--back", "#fff");
+    document
+      .getElementsByTagName("body")[0]
+      .style.setProperty("--realBanner", "#fff");
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--nav", "rgba(59, 59, 59, 0.605)");
@@ -118,9 +135,16 @@ watchEffect(() => {
       .style.setProperty("--stepIcon", "#fff");
     document
       .getElementsByTagName("body")[0]
+      .style.setProperty("--navExtends", "rgb(106, 106, 106)");
+    document
+      .getElementsByTagName("body")[0]
+      .style.setProperty("--navShadow", "rgb(142, 142, 142)");
+    document
+      .getElementsByTagName("body")[0]
       .style.setProperty("--weight", "500");
   }
 });
+const list = [{ msg: "我的" }, { msg: "关于" }, { msg: "首页" }];
 const unfold = ref(null);
 const con = ref(null);
 let foldFlag = ref<boolean>(false);
@@ -132,7 +156,6 @@ const clickE = () => {
   isUnFold.value = !foldFlag.value;
 };
 const resizeE = () => {
-  console.log(body.offsetWidth);
 
   if (body.offsetWidth <= 900) {
     isUnFold.value = false;
@@ -152,6 +175,33 @@ onMounted(() => {
     isUnFold.value = true;
   }
 });
+function onBeforeEnter(el) {
+  el.style.opacity = 0;
+  // el.style.transform = "rotate(90deg)";
+  // el.style.height = '1em';
+}
+
+function onEnter(el, done) {
+  gsap.to(el, {
+    opacity: 1,
+    // height: "3em",
+    // transform :"rotate(-90deg)",
+    delay: el.dataset.index * 0.1,
+    onComplete: done,
+  });
+}
+
+function onLeave(el, done) {
+  gsap.to(el, {
+    opacity: 0.5,
+
+    transform: "rotate(0deg)",
+    // height: '3em',
+    // transform: "translateY(-30px)",
+    delay: el.dataset.index * 0.05,
+    onComplete: done,
+  });
+}
 </script>
 <style lang="scss" scoped>
 @import "../../assets/scss/color.scss";
@@ -162,7 +212,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   min-height: 4rem;
-  z-index: 10000;
+  z-index: 10;
   backdrop-filter: blur(5.5px);
   background-color: $nav;
   display: flex;
@@ -172,6 +222,7 @@ onMounted(() => {
     height: 100%;
     display: flex;
     .nav-item {
+      // width: 33%;
       display: grid;
       place-content: center;
       height: 100%;
@@ -299,8 +350,8 @@ onMounted(() => {
 .first-enter-active,
 .first-leave-active {
   transition: all 0.5s ease;
+  transition-delay: 1s;
 }
-
 .first-enter-from,
 .first-leave-to {
   opacity: 0;
@@ -309,6 +360,7 @@ onMounted(() => {
 .second-enter-active,
 .second-leave-active {
   transition: all 0.5s ease;
+  transition-delay: 1s;
 }
 
 .second-enter-from,
@@ -363,15 +415,17 @@ onMounted(() => {
       width: 100%;
       transition: all 0.5s;
       border-bottom: 1px solid black;
-      background-color: rgb(93, 93, 93);
-      box-shadow: 0px -5px 7px -2px rgb(142, 142, 142);
+      background-color: $navExtends;
+      box-shadow: 0px -5px 7px -2px $navShadow;
       backdrop-filter: blur(5px);
       height: 3.5rem !important;
       color: white !important;
       margin-right: 0 !important;
     }
-    .nav-item:hover {
-      background-color: rgb(119, 119, 119);
+    .nav-item:hover,
+    .nav-item:active {
+      background-color: rgb(88, 88, 88);
+      color: orange !important;
     }
   }
 }

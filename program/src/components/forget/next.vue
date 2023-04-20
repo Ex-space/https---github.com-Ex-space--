@@ -33,7 +33,7 @@ const goNext = () => {
           title: "请输入正确有效的手机号码！",
           showClose: false,
           offset: 10,
-          zIndex: 100,
+          zIndex: 10101010100,
         });
         authFlag = false;
         if (!authTimeID) {
@@ -50,7 +50,7 @@ const goNext = () => {
           title: "验证码不匹配，请输入正确的验证码！",
           showClose: false,
           offset: 10,
-          zIndex: 100,
+          zIndex: 10101010100,
         });
         veriFlag = false;
         if (!veriTimeID) {
@@ -72,7 +72,7 @@ const goNext = () => {
         message: "重置密码成功，即将返回首页登录！",
         showClose: false,
         offset: 10,
-        zIndex: 100,
+        zIndex: 10101010100,
       });
     } else if (!store.consistentRight) {
       if (conFlag) {
@@ -81,7 +81,7 @@ const goNext = () => {
           title: "两次输入的密码不一致",
           showClose: false,
           offset: 10,
-          zIndex: 100,
+          zIndex: 10101010100,
         });
         conFlag = false;
         if (!conTimeID) {
@@ -100,7 +100,7 @@ const goNext = () => {
             "密码至少6位，至多16位，包括至少1个大写字母，1个小写字母，1个数字！",
           showClose: false,
           offset: 10,
-          zIndex: 100,
+          zIndex: 10101010100,
         });
         pwdFlag = false;
         if (!pwdTimeID) {

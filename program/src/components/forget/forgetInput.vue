@@ -189,6 +189,7 @@ $halfHeight: 0.5em;
   width: 70%;
   min-width: 300px;
   .iconfont {
+    color: $font;
     position: absolute;
     right: 0.3em;
     font-size: 1.8em;

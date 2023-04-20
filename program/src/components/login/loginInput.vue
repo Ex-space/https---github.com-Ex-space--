@@ -19,16 +19,26 @@
 
 <script lang="ts" setup>
 import { isVisible } from "element-plus/es/utils";
-import { ref, defineProps, onMounted, nextTick } from "vue";
+import { useStatusStore } from "../../store/Login";
+import { ref, defineProps, onMounted, nextTick, watchEffect } from "vue";
 const props = defineProps({
   inputType: String,
 });
+const store = useStatusStore();
 let value = ref("");
 let type = ref(props.inputType);
 //可见性的切换标志
 const myinput = ref();
 onMounted(() => {
   value.value = "";
+});
+watchEffect(() => {
+  if (type.value === "password") {
+    store.pwd = value.value;
+    
+  } else {
+    store.tel = value.value;
+  }
 });
 let isVisible = ref<boolean>(true);
 function changeVisible() {
@@ -44,8 +54,10 @@ function changeVisible() {
   });
 }
 </script>
-<style lang="less" scoped>
-@halfHeight: 0.5em;
+<style lang="scss" scoped>
+@import "../../assets/scss/color.scss";
+@import "../../assets/scss/font.scss";
+$halfHeight: 0.5em;
 .input-container {
   display: flex;
   position: relative;
@@ -62,10 +74,11 @@ function changeVisible() {
 }
 .input-container input[type="text"]:focus,
 .input-container input[type="password"]:focus {
-  border-color: #007bff;
+  border-color: $soft;
 }
 .input-container input[type="text"],
 .input-container input[type="password"] {
+  color: $font;
   margin-left: 0.5vmax;
   transition: 0.4s;
   font-size: 15px;
@@ -73,7 +86,7 @@ function changeVisible() {
   border: none;
   border: 0.13vw solid #ccc;
   border-radius: 1vmin;
-  padding: @halfHeight;
+  padding: $halfHeight;
   background-color: transparent;
   outline: none;
 }
@@ -96,6 +109,6 @@ function changeVisible() {
   transform: translate(0);
   left: 8%;
   font-size: 12px;
-  color: #333;
+  color: $font;
 }
 </style>

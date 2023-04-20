@@ -3,7 +3,9 @@ import { ref } from "vue";
 export const useStatusStore = defineStore("status", {
   state: () => {
     return {
-      isLogin: ref(false)
+      tel: ref<string>(""),
+      pwd: ref<string>(""),
+      isLogin: ref(false),
     };
   },
   // could also be defined as

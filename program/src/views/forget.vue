@@ -73,7 +73,7 @@ export default defineComponent({
     font-weight: $weight;
   }
 }
-.stepLine{
+.stepLine {
   transform: translateY(2em);
 }
 ::v-deep .el-step__icon {
@@ -141,6 +141,7 @@ export default defineComponent({
     left: 50%;
     transform: translate(-50%);
     font-size: 24px;
+    color: $font;
     font-weight: 500;
   }
 }
