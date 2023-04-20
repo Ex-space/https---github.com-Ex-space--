@@ -1,5 +1,4 @@
 <template>
-  <navBar></navBar>
   <n-card
     title=""
     hoverable

@@ -1,28 +1,47 @@
 <template>
-  <div class="nav-container">
-    <label class="switch">
-      <input type="checkbox"  v-model="checked" />
-      <span class="slider"></span>
-    </label>
-    <label class="hamburger">
-      <input type="checkbox" />
-      <svg viewBox="0 0 40 32">
-        <path
-          class="line line-top-bottom"
-          d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
-        ></path>
-        <path class="line" d="M7 16 27 16"></path>
-      </svg>
-    </label>
+  <div class="all">
+    <div class="nav-container">
+      <label class="switch">
+        <input type="checkbox" v-model="checked" />
+        <span class="slider"></span>
+      </label>
+      <ul class="nav-con" ref="con">
+        <Transition name="first">
+          <li class="second nav-item" v-if="isUnFold">关于</li>
+        </Transition>
+        <Transition name="second">
+          <li class="second nav-item" v-if="isUnFold">关于</li>
+        </Transition>
+        <Transition name="third">
+          <li class="third nav-item" v-if="isUnFold">首页</li>
+        </Transition>
+        <Transition name="fourth">
+          <li class="fourth nav-item" v-if="isUnFold">请求帮助</li>
+        </Transition>
+      </ul>
+      <label class="hamburger">
+        <input type="checkbox" ref="unfold" v-model="foldFlag" />
+        <svg viewBox="0 0 40 32">
+          <path
+            class="line line-top-bottom"
+            d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
+          ></path>
+          <path class="line" d="M7 16 27 16"></path>
+        </svg>
+      </label>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watchEffect } from "vue";
+import gsap from "gsap";
+import { onMounted, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const checked = ref<boolean>(true);
+const isUnFold = ref<boolean>(true);
 const theme = ref<string>("#333");
+
 watchEffect(() => {
   if (!checked.value) {
     document
@@ -102,9 +121,37 @@ watchEffect(() => {
       .style.setProperty("--weight", "500");
   }
 });
+const unfold = ref(null);
+const con = ref(null);
+let foldFlag = ref<boolean>(false);
+let body = document.documentElement;
 const goBack = () => {
   router.push("/data");
 };
+const clickE = () => {
+  isUnFold.value = !foldFlag.value;
+};
+const resizeE = () => {
+  console.log(body.offsetWidth);
+
+  if (body.offsetWidth <= 900) {
+    isUnFold.value = false;
+    foldFlag.value = false;
+  } else {
+    isUnFold.value = true;
+  }
+};
+onMounted(() => {
+  unfold.value.addEventListener("click", clickE);
+  window.addEventListener("resize", resizeE);
+
+  if (body.offsetWidth <= 900) {
+    isUnFold.value = false;
+    // con.value.style.display = "none";
+  } else {
+    isUnFold.value = true;
+  }
+});
 </script>
 <style lang="scss" scoped>
 @import "../../assets/scss/color.scss";
@@ -114,20 +161,36 @@ const goBack = () => {
   top: 0;
   left: 0;
   width: 100%;
-  height: 4vw;
-  min-height: 3rem;
+  min-height: 4rem;
   z-index: 10000;
   backdrop-filter: blur(5.5px);
   background-color: $nav;
   display: flex;
   align-items: center;
   justify-content: end;
+  .nav-con {
+    height: 100%;
+    display: flex;
+    .nav-item {
+      display: grid;
+      place-content: center;
+      height: 100%;
+      cursor: pointer;
+      margin-right: 2vw;
+      font-size: 1em;
+      color: white;
+    }
+    .night-mode {
+      display: none;
+    }
+  }
   .switch {
     font-size: 17px;
     position: relative;
     display: inline-block;
     width: 4em;
     height: 2em;
+    margin-right: 2vmax;
     box-sizing: border-box;
   }
 
@@ -202,6 +265,7 @@ const goBack = () => {
   }
 
   .hamburger svg {
+    display: none;
     /* The size of the SVG defines the overall size */
     height: 3em;
     /* Define the transition for transforming the SVG */
@@ -230,6 +294,85 @@ const goBack = () => {
   .hamburger input:checked + svg .line-top-bottom {
     stroke-dasharray: 20 300;
     stroke-dashoffset: -32.42;
+  }
+} /* 对移动中的元素应用的过渡 */
+.first-enter-active,
+.first-leave-active {
+  transition: all 0.5s ease;
+}
+
+.first-enter-from,
+.first-leave-to {
+  opacity: 0;
+  transform: translateY(0);
+}
+.second-enter-active,
+.second-leave-active {
+  transition: all 0.5s ease;
+}
+
+.second-enter-from,
+.second-leave-to {
+  opacity: 0;
+  transform: translateY(-3em);
+}
+.third-enter-active,
+.third-leave-active {
+  transition: all 0.5s ease;
+}
+
+.third-enter-from,
+.third-leave-to {
+  opacity: 0;
+  transform: translateY(-6em);
+}
+.fourth-enter-active,
+.fourth-leave-active {
+  transition: all 0.5s ease;
+}
+
+.fourth-enter-from,
+.fourth-leave-to {
+  opacity: 0;
+  transform: translateY(-9em);
+}
+
+@media screen and (max-width: 900px) {
+  .hamburger svg {
+    display: block !important;
+  }
+  .show {
+    display: block !important;
+  }
+  .all {
+    position: relative;
+  }
+  .nav-con {
+    position: absolute;
+    width: 100vw;
+    left: 0;
+    top: 4em;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column;
+    .first {
+      transition-delay: 1s;
+    }
+    .nav-item {
+      z-index: 999 !important;
+      width: 100%;
+      transition: all 0.5s;
+      border-bottom: 1px solid black;
+      background-color: rgb(93, 93, 93);
+      box-shadow: 0px -5px 7px -2px rgb(142, 142, 142);
+      backdrop-filter: blur(5px);
+      height: 3.5rem !important;
+      color: white !important;
+      margin-right: 0 !important;
+    }
+    .nav-item:hover {
+      background-color: rgb(119, 119, 119);
+    }
   }
 }
 </style>
