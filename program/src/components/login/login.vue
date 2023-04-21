@@ -98,6 +98,7 @@ export default defineComponent({
             }
           )
           .then((res) => {
+            
             if (res.data.code === 1) {
               if (successFlag) {
                 const pwdReg =

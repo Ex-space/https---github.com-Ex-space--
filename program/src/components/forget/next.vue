@@ -32,9 +32,12 @@ let veriTimeID = null;
 //手机号空节流阀
 let authFlag = true;
 let authTimeID = null;
-//错误验证码（第一步next）节流阀
+//错误验证码（第一步next）验证码过期节流阀
 let errorVeriFlag = true;
 let errorVeriTimeID = null;
+//错误验证码（第一步next）验证码错误节流阀
+let errorMsgFlag = true;
+let errorMsgTimeID = null;
 //axios请求错误节流阀
 let exceptionTimeID = null;
 let exceptionFlag = true;
@@ -195,21 +198,41 @@ const goNext = async () => {
           if (res.data.code) {
             store.currentIndex++;
           } else {
-            if (errorVeriFlag) {
-              ElNotification.error({
-                duration: 2000,
-                title: res.data.msg,
-                message: "请输入",
-                showClose: false,
-                offset: 10,
-                zIndex: 10101010100,
-              });
-              errorVeriFlag = false;
-              if (!errorVeriTimeID) {
-                errorVeriTimeID = setTimeout(() => {
-                  errorVeriFlag = true;
-                  errorVeriTimeID = null;
-                }, 2000);
+            if (res.data.msg === "参数错误，没有对应的验证码") {
+              if (errorVeriFlag) {
+                ElNotification.error({
+                  duration: 2000,
+                  title: "验证码不存在！",
+                  message: "验证码不存在或验证码过期，请重新发送验证码！",
+                  showClose: false,
+                  offset: 10,
+                  zIndex: 10101010100,
+                });
+                errorVeriFlag = false;
+                if (!errorVeriTimeID) {
+                  errorVeriTimeID = setTimeout(() => {
+                    errorVeriFlag = true;
+                    errorVeriTimeID = null;
+                  }, 2000);
+                }
+              }
+            } else {
+              if (errorMsgFlag) {
+                ElNotification.error({
+                  duration: 2000,
+                  title: "验证码错误！",
+                  message: "验证码错误，请检查验证码发送是否正确！",
+                  showClose: false,
+                  offset: 10,
+                  zIndex: 10101010100,
+                });
+                errorMsgFlag = false;
+                if (!errorMsgTimeID) {
+                  errorMsgTimeID = setTimeout(() => {
+                    errorMsgFlag = true;
+                    errorMsgTimeID = null;
+                  }, 2000);
+                }
               }
             }
           }

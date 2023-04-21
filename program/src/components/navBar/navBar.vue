@@ -12,7 +12,6 @@
         :css="false"
         @before-enter="onBeforeEnter"
         @enter="onEnter"
-        @leave="onLeave"
       >
         <li
           v-if="isUnFold"
@@ -178,27 +177,15 @@ onMounted(() => {
 function onBeforeEnter(el) {
   el.style.opacity = 0;
   // el.style.transform = "rotate(90deg)";
-  // el.style.height = '1em';
+  el.style.height = '100.5em!important';
 }
 
 function onEnter(el, done) {
   gsap.to(el, {
     opacity: 1,
-    // height: "3em",
+    height: "5em!important",
     // transform :"rotate(-90deg)",
     delay: el.dataset.index * 0.1,
-    onComplete: done,
-  });
-}
-
-function onLeave(el, done) {
-  gsap.to(el, {
-    opacity: 0.5,
-
-    transform: "rotate(0deg)",
-    // height: '3em',
-    // transform: "translateY(-30px)",
-    delay: el.dataset.index * 0.05,
     onComplete: done,
   });
 }
@@ -418,7 +405,7 @@ function onLeave(el, done) {
       background-color: $navExtends;
       box-shadow: 0px -5px 7px -2px $navShadow;
       backdrop-filter: blur(5px);
-      height: 3.5rem !important;
+      height: 3.5rem!important;
       color: white !important;
       margin-right: 0 !important;
     }

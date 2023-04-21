@@ -90,12 +90,14 @@ let emptyFlag = true;
 //手机号输入错误节流阀
 let errorTimeID = null;
 let errorFlag = true;
+//短信超出限制节流阀
+let overTimeID = null;
+let overFlag = true;
 //axios请求错误节流阀
 let exceptionTimeID = null;
 let exceptionFlag = true;
 let handleSend = async () => {
   if (store.tel) {
-
     await proxy.$http
       .post(
         "/user/code",
@@ -134,20 +136,39 @@ let handleSend = async () => {
             }, 1000);
           }
         } else {
-          if (errorFlag) {
-            ElMessage({
-              center: true,
-              type: "error",
-              duration: 2000,
-              showClose: true,
-              message: "无效手机号，请输入正确有效的手机号！",
-            });
-            errorFlag = false;
-            if (!errorTimeID) {
-              errorTimeID = setTimeout(() => {
-                errorFlag = true;
-                errorTimeID = null;
-              }, 2000);
+          if ((res.data.msg === "验证码发送失败，请联系管理员！")) {
+            if (overFlag) {
+              ElMessage({
+                center: true,
+                type: "error",
+                duration: 2000,
+                showClose: true,
+                message: "短信请求过于繁忙，请稍后再试！",
+              });
+              overFlag = false;
+              if (!overTimeID) {
+                overTimeID = setTimeout(() => {
+                  overFlag = true;
+                  overTimeID = null;
+                }, 2000);
+              }
+            }
+          } else {
+            if (errorFlag) {
+              ElMessage({
+                center: true,
+                type: "error",
+                duration: 2000,
+                showClose: true,
+                message: "该用户未注册或手机号不正确！",
+              });
+              errorFlag = false;
+              if (!errorTimeID) {
+                errorTimeID = setTimeout(() => {
+                  errorFlag = true;
+                  errorTimeID = null;
+                }, 2000);
+              }
             }
           }
         }
@@ -155,7 +176,7 @@ let handleSend = async () => {
       .catch((Error) => {
         if (exceptionFlag) {
           ElNotification({
-            title:'发送验证码失败！',
+            title: "发送验证码失败！",
             type: "error",
             duration: 2000,
             showClose: true,
@@ -244,7 +265,7 @@ const sendValue = () => {
   }
   //验证码限制规则
   if (name === "msg") {
-    const maxLength = 8;
+    const maxLength = 6;
     const reg = /\D/g;
     if (value.value.length > maxLength) {
       value.value = String(value.value).slice(0, maxLength);
