@@ -5,24 +5,28 @@
         <input type="checkbox" v-model="checked" />
         <span class="slider"></span>
       </label>
-      <TransitionGroup
-        class="nav-con"
-        ref="con"
-        tag="ul"
-        :css="false"
-        @before-enter="onBeforeEnter"
-        @enter="onEnter"
-      >
+      <ul class="nav-con1" ref="con">
         <li
-          v-if="isUnFold"
-          class="nav-item"
+          class="nav-item1"
           v-for="(item, index) in list"
           :key="item.msg"
           :data-index="index"
         >
           {{ item.msg }}
         </li>
-      </TransitionGroup>
+      </ul>
+      <Transition name="slide-fade">
+        <ul class="nav-con" v-if="isUnFold" ref="con">
+          <li
+            class="nav-item"
+            v-for="(item, index) in list"
+            :key="item.msg"
+            :data-index="index"
+          >
+            {{ item.msg }}
+          </li>
+        </ul>
+      </Transition>
       <label class="hamburger">
         <input type="checkbox" ref="unfold" v-model="foldFlag" />
         <svg viewBox="0 0 40 32">
@@ -43,7 +47,7 @@ import { onMounted, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const checked = ref<boolean>(true);
-const isUnFold = ref<boolean>(true);
+const isUnFold = ref<boolean>(false);
 const theme = ref<string>("#333");
 
 watchEffect(() => {
@@ -93,6 +97,9 @@ watchEffect(() => {
       .style.setProperty("--navShadow", "rgb(102, 102, 102)");
     document
       .getElementsByTagName("body")[0]
+      .style.setProperty("--conBack", "rgb(32, 32, 32)");
+    document
+      .getElementsByTagName("body")[0]
       .style.setProperty("--weight", "300");
   } else {
     document
@@ -140,6 +147,9 @@ watchEffect(() => {
       .style.setProperty("--navShadow", "rgb(142, 142, 142)");
     document
       .getElementsByTagName("body")[0]
+      .style.setProperty("--conBack", "rgb(72, 72, 72)");
+    document
+      .getElementsByTagName("body")[0]
       .style.setProperty("--weight", "500");
   }
 });
@@ -148,47 +158,19 @@ const unfold = ref(null);
 const con = ref(null);
 let foldFlag = ref<boolean>(false);
 let body = document.documentElement;
-const goBack = () => {
-  router.push("/data");
-};
 const clickE = () => {
   isUnFold.value = !foldFlag.value;
 };
 const resizeE = () => {
-
   if (body.offsetWidth <= 900) {
     isUnFold.value = false;
     foldFlag.value = false;
-  } else {
-    isUnFold.value = true;
   }
 };
 onMounted(() => {
   unfold.value.addEventListener("click", clickE);
   window.addEventListener("resize", resizeE);
-
-  if (body.offsetWidth <= 900) {
-    isUnFold.value = false;
-    // con.value.style.display = "none";
-  } else {
-    isUnFold.value = true;
-  }
 });
-function onBeforeEnter(el) {
-  el.style.opacity = 0;
-  // el.style.transform = "rotate(90deg)";
-  el.style.height = '100.5em!important';
-}
-
-function onEnter(el, done) {
-  gsap.to(el, {
-    opacity: 1,
-    height: "5em!important",
-    // transform :"rotate(-90deg)",
-    delay: el.dataset.index * 0.1,
-    onComplete: done,
-  });
-}
 </script>
 <style lang="scss" scoped>
 @import "../../assets/scss/color.scss";
@@ -205,6 +187,20 @@ function onEnter(el, done) {
   display: flex;
   align-items: center;
   justify-content: end;
+  .nav-con1 {
+    height: 100%;
+    display: flex;
+    .nav-item1 {
+      // width: 33%;
+      display: grid;
+      place-content: center;
+      height: 100%;
+      cursor: pointer;
+      margin-right: 2vw;
+      font-size: 1em;
+      color: white;
+    }
+  }
   .nav-con {
     height: 100%;
     display: flex;
@@ -217,9 +213,6 @@ function onEnter(el, done) {
       margin-right: 2vw;
       font-size: 1em;
       color: white;
-    }
-    .night-mode {
-      display: none;
     }
   }
   .switch {
@@ -334,46 +327,18 @@ function onEnter(el, done) {
     stroke-dashoffset: -32.42;
   }
 } /* 对移动中的元素应用的过渡 */
-.first-enter-active,
-.first-leave-active {
-  transition: all 0.5s ease;
-  transition-delay: 1s;
-}
-.first-enter-from,
-.first-leave-to {
-  opacity: 0;
-  transform: translateY(0);
-}
-.second-enter-active,
-.second-leave-active {
-  transition: all 0.5s ease;
-  transition-delay: 1s;
+.slide-fade-enter-active {
+  transition: all 0.4s cubic-bezier(1, 0.8, 0.4, 1);
 }
 
-.second-enter-from,
-.second-leave-to {
-  opacity: 0;
-  transform: translateY(-3em);
-}
-.third-enter-active,
-.third-leave-active {
-  transition: all 0.5s ease;
+.slide-fade-leave-active {
+  transition: all 0.4s cubic-bezier(1, 0.5, 0.8, 1);
 }
 
-.third-enter-from,
-.third-leave-to {
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(80%);
   opacity: 0;
-  transform: translateY(-6em);
-}
-.fourth-enter-active,
-.fourth-leave-active {
-  transition: all 0.5s ease;
-}
-
-.fourth-enter-from,
-.fourth-leave-to {
-  opacity: 0;
-  transform: translateY(-9em);
 }
 
 @media screen and (max-width: 900px) {
@@ -386,12 +351,16 @@ function onEnter(el, done) {
   .all {
     position: relative;
   }
+  .nav-con1 {
+    display: none !important;
+  }
   .nav-con {
     position: absolute;
-    width: 100vw;
-    left: 0;
+    width: 30vmax;
+    right: 0;
     top: 4em;
-    height: auto !important;
+    height: 100vh !important;
+    background-color: $conBack;
     display: flex !important;
     flex-direction: column;
     .first {
@@ -405,7 +374,7 @@ function onEnter(el, done) {
       background-color: $navExtends;
       box-shadow: 0px -5px 7px -2px $navShadow;
       backdrop-filter: blur(5px);
-      height: 3.5rem!important;
+      height: 3.5rem !important;
       color: white !important;
       margin-right: 0 !important;
     }

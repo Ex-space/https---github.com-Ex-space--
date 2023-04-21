@@ -143,7 +143,7 @@ let handleSend = async () => {
                 type: "error",
                 duration: 2000,
                 showClose: true,
-                message: "短信请求过于繁忙，请稍后再试！",
+                message: "请求繁忙，请稍后再试！",
               });
               overFlag = false;
               if (!overTimeID) {
@@ -198,7 +198,7 @@ let handleSend = async () => {
         type: "error",
         duration: 2000,
         showClose: true,
-        message: "请先输入手机号再发送验证码！",
+        message: "请输入手机号！",
       });
       emptyFlag = false;
       if (!emptyTimeID) {
