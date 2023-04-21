@@ -56,50 +56,168 @@ import {
 } from "vue";
 import { ElNotification } from "element-plus";
 import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
 export default defineComponent({
   setup() {
     const checked = ref<boolean>(false);
     const { proxy } = getCurrentInstance();
     const status = useStatusStore();
     const store = useIndexStore();
+    //手机号为空节流阀
+    let telTimeID = null;
+    let telFlag = true;
+    //全为空节流阀
+    let allTimeID = null;
+    let allFlag = true;
+    //密码为空节流阀
+    let pwdTimeID = null;
+    let pwdFlag = true;
+    //输入错误节流阀
+    let errorTimeID = null;
+    let errorFlag = true;
+    //axios请求错误节流阀
+    let exceptionTimeID = null;
+    let exceptionFlag = true;
+    //登录成功时的节流阀
+    let successTimeID = null;
+    let successFlag = true;
     const testLogin = async () => {
-      console.log(status.tel);
-      console.log(status.pwd);
-      await proxy.$http
-        .post(
-          "/user/login",
-          {
-            phone: status.tel,
-            password: status.pwd,
-            remember_me: checked ? 1 : 0,
-          },
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
+      if (status.tel && status.pwd) {
+        await proxy.$http
+          .post(
+            "/user/login",
+            {
+              phone: status.tel,
+              password: status.pwd,
+              remember_me: checked ? 1 : 0,
             },
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then((res) => {
+            if (res.data.code === 1) {
+              if (successFlag) {
+                const pwdReg =
+                  /^.*(?=.{6,16})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
+                ElNotification({
+                  title: "登录成功！",
+                  type: "success",
+                  offset: 50,
+                  duration: 2000,
+                  zIndex: 100000000000000,
+                });
+                if (!pwdReg.exec(status.pwd)) {
+                  ElNotification({
+                    title: "请尽快修改密码！",
+                    message: "检测到您的密码强度过低，请尽快修改密码！",
+                    type: "warning",
+                    offset: 100,
+                    duration: 2000,
+                    zIndex: 100000000000000,
+                  });
+                }
+                closeHandle();
+                successFlag = false;
+                if (!successTimeID) {
+                  successTimeID = setTimeout(() => {
+                    successFlag = true;
+                    successTimeID = null;
+                  }, 2000);
+                }
+              }
+            } else {
+              if (errorFlag) {
+                ElNotification({
+                  title: "登录失败！",
+                  message: res.data.msg,
+                  type: "error",
+                  offset: 50,
+                  duration: 2000,
+                  zIndex: 100000000000000,
+                });
+                errorFlag = false;
+                if (!errorTimeID) {
+                  errorTimeID = setTimeout(() => {
+                    errorFlag = true;
+                    errorTimeID = null;
+                  }, 2000);
+                }
+              }
+            }
+          })
+          .catch((Error) => {
+            if (exceptionFlag) {
+              ElNotification({
+                title: "登录失败！",
+                type: "error",
+                duration: 2000,
+                showClose: true,
+                message: "服务器繁忙，请联系管理人员！",
+              });
+              exceptionFlag = false;
+              if (!exceptionTimeID) {
+                exceptionTimeID = setTimeout(() => {
+                  exceptionFlag = true;
+                  exceptionTimeID = null;
+                }, 2000);
+              }
+            }
+          });
+      } else if (!status.tel && !status.pwd) {
+        if (allFlag) {
+          ElMessage({
+            center: true,
+            type: "error",
+            duration: 2000,
+            showClose: true,
+            message: "请输入手机号和密码 !",
+          });
+          allFlag = false;
+          if (!allTimeID) {
+            allTimeID = setTimeout(() => {
+              allFlag = true;
+              allTimeID = null;
+            }, 2000);
           }
-        )
-        .then((res) => {
-          console.log(res);
-          if (res.data.code === 1) {
-            ElNotification({
-              title: "登录成功！",
-              type: "success",
-              offset: 50,
-              zIndex: 100000000000000,
-            });
-            closeHandle();
-          } else {
-            ElNotification({
-              title: "登录失败！",
-              message: res.data.msg,
-              type: "error",
-              offset: 50,
-              zIndex: 100000000000000,
-            });
+        }
+      } else if (!status.tel) {
+        if (telFlag) {
+          ElMessage({
+            center: true,
+            type: "error",
+            duration: 2000,
+            showClose: true,
+            message: "请输入手机号 !",
+          });
+          telFlag = false;
+          if (!telTimeID) {
+            telTimeID = setTimeout(() => {
+              telFlag = true;
+              telTimeID = null;
+            }, 2000);
           }
-        })
-        .catch((Error) => {});
+        }
+      } else {
+        if (pwdFlag) {
+          ElMessage({
+            center: true,
+            type: "error",
+            duration: 2000,
+            showClose: true,
+            message: "请输入密码 !",
+          });
+          pwdFlag = false;
+          if (!pwdTimeID) {
+            pwdTimeID = setTimeout(() => {
+              pwdFlag = true;
+              pwdTimeID = null;
+            }, 2000);
+          }
+        }
+      }
     };
 
     const resetIndex = () => {
@@ -316,7 +434,7 @@ export default defineComponent({
     }
     button {
       border: none;
-      color: #fff;
+      color: #fff !important;
       background-image: linear-gradient(30deg, #007bff, #4da3ff);
       border-radius: 0.3em;
       background-size: 100% auto;

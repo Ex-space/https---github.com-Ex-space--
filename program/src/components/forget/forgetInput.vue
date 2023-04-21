@@ -35,6 +35,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ElNotification } from "element-plus";
 import { useIndexStore } from "../../store/Forget";
 import { ElMessage } from "element-plus";
 import {
@@ -42,6 +43,7 @@ import {
   defineProps,
   onMounted,
   nextTick,
+  getCurrentInstance,
   onUnmounted,
   watchEffect,
   provide,
@@ -77,14 +79,114 @@ const sendOption = () => {
     isDisabled.value = false;
   }
 };
-
+const { proxy } = getCurrentInstance();
 const store = useIndexStore();
-let handleSend = () => {
-  if (!timeID.value) {
-    sendOption();
-    timeID.value = setInterval(() => {
-      sendOption();
-    }, 1000);
+//发送成功时的节流阀
+let successTimeID = null;
+let successFlag = true;
+//没有输入手机号的节流阀
+let emptyTimeID = null;
+let emptyFlag = true;
+//手机号输入错误节流阀
+let errorTimeID = null;
+let errorFlag = true;
+//axios请求错误节流阀
+let exceptionTimeID = null;
+let exceptionFlag = true;
+let handleSend = async () => {
+  if (store.tel) {
+
+    await proxy.$http
+      .post(
+        "/user/code",
+        {
+          phone: store.tel,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        
+        if (res.data.code) {
+          if (successFlag) {
+            ElMessage({
+              center: true,
+              type: "success",
+              duration: 2000,
+              showClose: true,
+              message: "验证码发送成功，5分钟内有效！",
+            });
+            successFlag = false;
+            if (!successTimeID) {
+              successTimeID = setTimeout(() => {
+                successFlag = true;
+                successTimeID = null;
+              }, 2000);
+            }
+          }
+          if (!timeID.value) {
+            sendOption();
+            timeID.value = setInterval(() => {
+              sendOption();
+            }, 1000);
+          }
+        } else {
+          if (errorFlag) {
+            ElMessage({
+              center: true,
+              type: "error",
+              duration: 2000,
+              showClose: true,
+              message: "无效手机号，请输入正确有效的手机号！",
+            });
+            errorFlag = false;
+            if (!errorTimeID) {
+              errorTimeID = setTimeout(() => {
+                errorFlag = true;
+                errorTimeID = null;
+              }, 2000);
+            }
+          }
+        }
+      })
+      .catch((Error) => {
+        if (exceptionFlag) {
+          ElNotification({
+            title:'发送验证码失败！',
+            type: "error",
+            duration: 2000,
+            showClose: true,
+            message: "服务器繁忙，请联系管理人员！",
+          });
+          exceptionFlag = false;
+          if (!exceptionTimeID) {
+            exceptionTimeID = setTimeout(() => {
+              exceptionFlag = true;
+              exceptionTimeID = null;
+            }, 2000);
+          }
+        }
+      });
+  } else {
+    if (emptyFlag) {
+      ElMessage({
+        center: true,
+        type: "error",
+        duration: 2000,
+        showClose: true,
+        message: "请先输入手机号再发送验证码！",
+      });
+      emptyFlag = false;
+      if (!emptyTimeID) {
+        emptyTimeID = setTimeout(() => {
+          emptyFlag = true;
+          emptyTimeID = null;
+        }, 2000);
+      }
+    }
   }
 };
 let isVisible = ref<boolean>(true);

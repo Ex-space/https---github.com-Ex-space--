@@ -7,25 +7,231 @@
 
 <script lang="ts" setup>
 import { useIndexStore } from "../../store/Forget";
-import { provide, ref } from "vue";
+import { provide, ref, getCurrentInstance, Teleport } from "vue";
 import { ElMessage } from "element-plus";
 import { ElNotification } from "element-plus";
 const store = useIndexStore();
+const { proxy } = getCurrentInstance();
 //节流阀
+//reset信息节流阀
+let infoFlag = true;
+let infoTimeID = null;
+//密码空节流阀
 let pwdFlag = true;
 let pwdTimeID = null;
+//确认密码空节流阀
 let conFlag = true;
 let conTimeID = null;
+//重置密码成功节流阀
+let resetFlag = true;
+let resetTimeID = null;
+
+//验证码空节流阀
 let veriFlag = true;
 let veriTimeID = null;
+//手机号空节流阀
 let authFlag = true;
 let authTimeID = null;
-const goNext = () => {
+//错误验证码（第一步next）节流阀
+let errorVeriFlag = true;
+let errorVeriTimeID = null;
+//axios请求错误节流阀
+let exceptionTimeID = null;
+let exceptionFlag = true;
+const goNext = async () => {
+  //校验重置密码
+  if (store.currentIndex === 2) {
+    if (store.pwd && store.rePwd) {
+      //下一步点击事件触发
+      if (store.pwdRight && store.consistentRight) {
+        await proxy.$http
+          .post(
+            "/user/reset",
+            {
+              phone: store.tel,
+              new_password: store.pwd,
+            },
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then((res) => {
+            if (res.data.code) {
+              store.currentIndex++;
+              if (resetFlag) {
+                ElNotification.success({
+                  title: "重置密码成功！",
+                  message: "重置密码成功，即将返回首页登录！",
+                  showClose: false,
+                  offset: 10,
+                  duration: 2000,
+                  zIndex: 10101010100,
+                });
+                resetFlag = false;
+                if (!resetTimeID) {
+                  resetTimeID = setTimeout(() => {
+                    resetFlag = true;
+                    resetTimeID = null;
+                  }, 2000);
+                }
+              }
+            } else {
+              if (errorVeriFlag) {
+                ElNotification.error({
+                  duration: 2000,
+                  title: res.data.msg,
+                  message: "请输入",
+                  showClose: false,
+                  offset: 10,
+                  zIndex: 10101010100,
+                });
+                errorVeriFlag = false;
+                if (!errorVeriTimeID) {
+                  errorVeriTimeID = setTimeout(() => {
+                    errorVeriFlag = true;
+                    errorVeriTimeID = null;
+                  }, 2000);
+                }
+              }
+            }
+          })
+          .catch((Error) => {
+            if (exceptionFlag) {
+              ElNotification({
+                title: "出错啦！",
+                type: "error",
+                duration: 2000,
+                showClose: true,
+                message: "服务器繁忙，请联系管理人员！",
+              });
+              exceptionFlag = false;
+              if (!exceptionTimeID) {
+                exceptionTimeID = setTimeout(() => {
+                  exceptionFlag = true;
+                  exceptionTimeID = null;
+                }, 2000);
+              }
+            }
+          });
+      } else if (!store.consistentRight) {
+        if (conFlag) {
+          ElNotification.error({
+            duration: 2000,
+            title: "两次输入的密码不一致",
+            showClose: false,
+            offset: 10,
+            zIndex: 10101010100,
+          });
+          conFlag = false;
+          if (!conTimeID) {
+            conTimeID = setTimeout(() => {
+              conFlag = true;
+              conTimeID = null;
+            }, 2000);
+          }
+        }
+      } else {
+        if (pwdFlag) {
+          ElNotification.error({
+            duration: 4000,
+            title: "密码格式错误！",
+            message:
+              "密码至少6位，至多16位，包括至少1个大写字母，1个小写字母，1个数字！",
+            showClose: false,
+            offset: 10,
+            zIndex: 10101010100,
+          });
+          pwdFlag = false;
+          if (!pwdTimeID) {
+            pwdTimeID = setTimeout(() => {
+              pwdFlag = true;
+              pwdTimeID = null;
+            }, 4000);
+          }
+        }
+      }
+    } else {
+      if (infoFlag) {
+        ElNotification.error({
+          duration: 2000,
+          title: "请完善重置密码信息！",
+          showClose: false,
+          offset: 10,
+          zIndex: 10101010100,
+        });
+        infoFlag = false;
+        if (!infoTimeID) {
+          infoTimeID = setTimeout(() => {
+            infoFlag = true;
+            infoTimeID = null;
+          }, 2000);
+        }
+      }
+    }
+  }
   //校验手机验证那
   if (store.currentIndex === 1) {
+    //判定是否有缺少输入项
+    store.authRight = store.tel ? true : false;
+    store.veriRight = store.msg ? true : false;
     //下一步点击事件触发
     if (store.authRight && store.veriRight) {
-      store.currentIndex++;
+      await proxy.$http
+        .post(
+          "/user/verify",
+          {
+            phone: store.tel,
+            code: store.msg,
+          },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.code) {
+            store.currentIndex++;
+          } else {
+            if (errorVeriFlag) {
+              ElNotification.error({
+                duration: 2000,
+                title: res.data.msg,
+                message: "请输入",
+                showClose: false,
+                offset: 10,
+                zIndex: 10101010100,
+              });
+              errorVeriFlag = false;
+              if (!errorVeriTimeID) {
+                errorVeriTimeID = setTimeout(() => {
+                  errorVeriFlag = true;
+                  errorVeriTimeID = null;
+                }, 2000);
+              }
+            }
+          }
+        })
+        .catch((Error) => {
+          if (exceptionFlag) {
+            ElNotification({
+              title: "出错啦！",
+              type: "error",
+              duration: 2000,
+              showClose: true,
+              message: "服务器繁忙，请联系管理人员！",
+            });
+            exceptionFlag = false;
+            if (!exceptionTimeID) {
+              exceptionTimeID = setTimeout(() => {
+                exceptionFlag = true;
+                exceptionTimeID = null;
+              }, 2000);
+            }
+          }
+        });
     } else if (!store.authRight) {
       if (authFlag) {
         ElNotification.error({
@@ -47,7 +253,7 @@ const goNext = () => {
       if (veriFlag) {
         ElNotification.error({
           duration: 2000,
-          title: "验证码不匹配，请输入正确的验证码！",
+          title: "请输入验证码！",
           showClose: false,
           offset: 10,
           zIndex: 10101010100,
@@ -62,61 +268,11 @@ const goNext = () => {
       }
     }
   }
-  //校验重置密码
-  if (store.currentIndex === 2) {
-    //下一步点击事件触发
-    if (store.pwdRight && store.consistentRight) {
-      store.currentIndex++;
-      ElNotification.success({
-        title: "重置密码成功！",
-        message: "重置密码成功，即将返回首页登录！",
-        showClose: false,
-        offset: 10,
-        zIndex: 10101010100,
-      });
-    } else if (!store.consistentRight) {
-      if (conFlag) {
-        ElNotification.error({
-          duration: 2000,
-          title: "两次输入的密码不一致",
-          showClose: false,
-          offset: 10,
-          zIndex: 10101010100,
-        });
-        conFlag = false;
-        if (!conTimeID) {
-          conTimeID = setTimeout(() => {
-            conFlag = true;
-            conTimeID = null;
-          }, 2000);
-        }
-      }
-    } else {
-      if (pwdFlag) {
-        ElNotification.error({
-          duration: 4000,
-          title: "密码格式错误！",
-          message:
-            "密码至少6位，至多16位，包括至少1个大写字母，1个小写字母，1个数字！",
-          showClose: false,
-          offset: 10,
-          zIndex: 10101010100,
-        });
-        pwdFlag = false;
-        if (!pwdTimeID) {
-          pwdTimeID = setTimeout(() => {
-            pwdFlag = true;
-            pwdTimeID = null;
-          }, 4000);
-        }
-      }
-    }
-  }
 };
 </script>
 <style lang="scss" scoped>
-@import '../../assets/scss/color.scss';
-@import '../../assets/scss/font.scss';
+@import "../../assets/scss/color.scss";
+@import "../../assets/scss/font.scss";
 button {
   transition: all 0.3s;
   margin-top: 3em;
