@@ -12,6 +12,7 @@
     "@types/vue": "^2.0.0",
     "autoprefixer": "8.0.0",
     "axios": "^1.3.6",
+    "echarts": "^5.4.2",
     "element-plus": "^2.3.3",
     "js-md5": "^0.7.3",
     "less": "^4.1.3",

@@ -17,11 +17,16 @@ import complete from "./components/forget/complete.vue";
 import reset from "./components/forget/reset.vue";
 import forgetInput from "./components/forget/forgetInput.vue";
 import next from "./components/forget/next.vue";
+import * as echarts from 'echarts'
+// import.meta.globEager("./theme/purple-passion.js")
+// import.meta.globEager("./theme/shine.js");
+// require('./theme/purple-passion.js')
+// require("./theme/shine.js");
 const app = createApp(App);
 const pinia = createPinia();
 axios.defaults.baseURL = "http://113.141.84.94:8080";
 app.config.globalProperties.$http = axios;
-
+app.config.globalProperties.$echarts = echarts;
 app.component("loginInput", loginInput);
 app.component("send", send);
 app.component("complete", complete);

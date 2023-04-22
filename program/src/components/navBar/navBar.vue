@@ -43,15 +43,17 @@
 
 <script lang="ts" setup>
 import gsap from "gsap";
+import { useEchartsStore } from "../../store/echarts";
 import { onMounted, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const checked = ref<boolean>(true);
 const isUnFold = ref<boolean>(false);
 const theme = ref<string>("#333");
-
+const eStore = useEchartsStore();
 watchEffect(() => {
   if (!checked.value) {
+    eStore.darkFlag = true;
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--theme", "#333");
@@ -63,7 +65,7 @@ watchEffect(() => {
       .style.setProperty("--back", "#121212");
     document
       .getElementsByTagName("body")[0]
-      .style.setProperty("--nav", "rgba(59,59, 59, 0.605)");
+      .style.setProperty("--nav", "rgb(59,59, 59)");
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--font", "#fff");
@@ -102,6 +104,7 @@ watchEffect(() => {
       .getElementsByTagName("body")[0]
       .style.setProperty("--weight", "300");
   } else {
+    eStore.darkFlag = false;
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--theme", "#fff");
@@ -116,7 +119,7 @@ watchEffect(() => {
       .style.setProperty("--realBanner", "#fff");
     document
       .getElementsByTagName("body")[0]
-      .style.setProperty("--nav", "rgba(59, 59, 59, 0.605)");
+      .style.setProperty("--nav", "#002FA7");
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--font", "#000");
