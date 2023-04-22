@@ -119,7 +119,7 @@ watchEffect(() => {
       .style.setProperty("--realBanner", "#fff");
     document
       .getElementsByTagName("body")[0]
-      .style.setProperty("--nav", "#002FA7");
+      .style.setProperty("--nav", "#0028A7");
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--font", "#000");
@@ -340,7 +340,7 @@ onMounted(() => {
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateX(80%);
+  width: 0 !important;
   opacity: 0;
 }
 

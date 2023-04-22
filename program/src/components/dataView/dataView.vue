@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <slideBar></slideBar>
+    <slideBar class="slideBar"></slideBar>
     <div class="view-container"></div>
   </div>
 </template>
@@ -40,13 +40,16 @@ onMounted(() => {
     legend: {
       data: ["邮件营销", "联盟广告", "视频广告", "直接访问", "搜索引擎"],
     },
+    dataZoom: {
+      type: "inside",
+    },
     grid: {
       left: "3%",
       right: "4%",
       bottom: "3%",
       containLabel: true,
     },
-    darkMode:true,
+    darkMode: true,
     toolbox: {
       right: "4%",
       show: true,
@@ -82,38 +85,86 @@ onMounted(() => {
     yAxis: {
       type: "value",
     },
+    // visualMap: {
+    //   top: 50,
+    //   right: 10,
+    //   pieces: [
+    //     {
+    //       gt: 0,
+    //       lte: 50,
+    //       color: "#93CE07",
+    //     },
+    //     {
+    //       gt: 50,
+    //       lte: 100,
+    //       color: "#FBDB0F",
+    //     },
+    //     {
+    //       gt: 100,
+    //       lte: 150,
+    //       color: "#FC7D02",
+    //     },
+    //     {
+    //       gt: 150,
+    //       lte: 200,
+    //       color: "#FD0100",
+    //     },
+    //     {
+    //       gt: 200,
+    //       lte: 300,
+    //       color: "#AA069F",
+    //     },
+    //     {
+    //       gt: 300,
+    //       color: "#AC3B2A",
+    //     },
+    //   ],
+    //   outOfRange: {
+    //     color: "#999",
+    //   },
+    // },
     series: [
       {
         name: "邮件营销",
         type: "line",
-        stack: "总量",
+        sampling: "average",
         data: [120, 132, 101, 134, 90, 230, 210],
+        areaStyle: {
+          color: new proxy.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: "rgb(255, 158, 68)",
+            },
+            {
+              offset: 1,
+              color: "rgb(255, 70, 131)",
+            },
+          ]),
+        },
       },
       {
         name: "联盟广告",
         type: "line",
-        stack: "总量",
         data: [220, 182, 191, 234, 290, 330, 310],
       },
       {
         name: "视频广告",
         type: "line",
-        stack: "总量",
         data: [150, 232, 201, 154, 190, 330, 410],
       },
       {
         name: "直接访问",
         type: "line",
-        stack: "总量",
         data: [320, 332, 301, 334, 390, 330, 320],
       },
       {
         name: "搜索引擎",
         type: "line",
-        stack: "总量",
         data: [820, 932, 901, 934, 1290, 1330, 1320],
       },
     ],
+    animation: true,
+    animationDuration: 1000,
   };
   nextTick(() => {
     // myChart = proxy.$echarts.init(chartDom, themeName);
