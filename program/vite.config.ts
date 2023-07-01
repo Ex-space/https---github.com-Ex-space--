@@ -4,6 +4,11 @@ import vue from "@vitejs/plugin-vue";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  server: {
+    host: '127.0.0.1',
+    port: 8080,
+    open:true
+  }
   // css: {
   //   extract: false, //false表示开发环境,true表示生成环境
   //   sourceMap: false,
